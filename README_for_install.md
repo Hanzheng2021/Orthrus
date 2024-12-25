@@ -47,7 +47,6 @@ Clone this repository unter the directory you created:
 
 `git clone https://github.com/anonymous/orthrus.git`
 
-Checkout the`research-iss` branch.
 
 ### Installing Dependencies
 With `/opt/gopath/src/github.com/anonymous/orthrus` as working directory, go to the deployment directory:
