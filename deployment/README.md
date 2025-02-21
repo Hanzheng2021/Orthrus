@@ -17,7 +17,7 @@ Installs the AWS Cloud CLI tools and set up the AWS Cloud CLI's access key.<br/>
 Needs to be run only once on a machine (controller).<br/>
 
 
-## Automated ISS Deployment
+## Automated Orthrus Deployment
 In a nutshell, to run a set of experiments one has to perform 2 steps:
 1. Edit the configuration generation script to describe all desired experiments.
 2. Run the deployment script `deploy-clould-***.sh` with the correct arguments
