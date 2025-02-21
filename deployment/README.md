@@ -53,7 +53,7 @@ This local deployment builds and runs the experiment locally.
 
 ### AWS Cloud Deployment
 
-This AWS Cloud Deployment builds and runs the experiment in AWS Cloud Service. Related file is located in [cloud-deploy](deployment/scripts/cloud-deploy) folder.
+This AWS Cloud Deployment builds and runs the experiment in AWS Cloud Service. Related file is located in [cloud-deploy](scripts/cloud-deploy) folder.
 
 #### Key Options and Their Functions:
 
