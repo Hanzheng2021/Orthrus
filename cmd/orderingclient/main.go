@@ -5,10 +5,10 @@ import (
 	"os"
 	"sync"
 
-	"github.com/anonymous/orthrus/account"
-	"github.com/anonymous/orthrus/config"
-	"github.com/anonymous/orthrus/membership"
-	"github.com/anonymous/orthrus/profiling"
+	"github.com/Hanzheng2021/Orthrus/account"
+	"github.com/Hanzheng2021/Orthrus/config"
+	"github.com/Hanzheng2021/Orthrus/membership"
+	"github.com/Hanzheng2021/Orthrus/profiling"
 	"github.com/rs/zerolog"
 	logger "github.com/rs/zerolog/log"
 )

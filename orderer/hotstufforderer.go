@@ -17,13 +17,13 @@ package orderer
 import (
 	"sync"
 	"sync/atomic"
-    "github.com/anonymous/orthrus/crypto"
-    "github.com/anonymous/orthrus/membership"
+    "github.com/Hanzheng2021/Orthrus/crypto"
+    "github.com/Hanzheng2021/Orthrus/membership"
 	logger "github.com/rs/zerolog/log"
-	"github.com/anonymous/orthrus/config"
-	"github.com/anonymous/orthrus/log"
-	"github.com/anonymous/orthrus/manager"
-	pb "github.com/anonymous/orthrus/protobufs"
+	"github.com/Hanzheng2021/Orthrus/config"
+	"github.com/Hanzheng2021/Orthrus/log"
+	"github.com/Hanzheng2021/Orthrus/manager"
+	pb "github.com/Hanzheng2021/Orthrus/protobufs"
 )
 
 // Represents a HotStuff Orderer implementation.

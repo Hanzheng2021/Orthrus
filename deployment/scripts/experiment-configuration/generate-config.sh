@@ -45,15 +45,15 @@ clients32=""    # deploys 32 client machine which run the specified number of cl
 # RequestsPerClient must not be zero if PrecomputeRequests is true.
 PrecomputeRequests=true
 
-systemSizes="16" # Must be sorted in ascending order!
-failureCounts=(0) # For each system size, the corresponding failure count (on top of the correct nodes)
-fixBatchRate=false
+systemSizes="15" # Must be sorted in ascending order!
+failureCounts=(1) # For each system size, the corresponding failure count (on top of the correct nodes)
+fixBatchRate=true
 
 StragglerCnt=(0) # Count of Straggler (Only effect when crashTimings is 'Straggler')
 privKeyNumEachPeer=(5) # Using as buffer for lagged instance
 UseSig=(false)
 
-contractProportion="100" # (%) The proportion of contract 
+contractProportion="54" # (%) The proportion of contract 
 gasfee="0.003" # The gas fee
 
 reuseFaulty=true  # If true, both correct and faulty peers will have the same tag and will be launched together, with the same config file.
@@ -80,7 +80,7 @@ orderers="Pbft"             # Possible values: Pbft HotStuff Raft Dummy
 checkpointers="Signing"
 
 # Parameters chosen for experiments
-durations="60"             # [s]   !!! Don't forget to change the timeout in generate-master-commands.py if increasing this value !!!
+durations="120"             # [s]   !!! Don't forget to change the timeout in generate-master-commands.py if increasing this value !!!
 bandwidths="1gbit"         # any value accepted by the tc command or "unlimited" !!! ATTENTION: Adapt MaxProposeDataRate in config accordingly !!!
 payloadSizes="500"         # [Bytes]
 fixedEpochLength=false
@@ -95,11 +95,13 @@ leaderPolicies="Simple"  # Possible values:
                          #     "Simple": all nodes in the leaderset
                          #     "Blacklist": faulty nodes are blacklisted, at least 2f+1 nodes in the leaderset
                          #     "Backoff": faulty nodes are temporarily blacklisted and their penalty exponentially increases if after reinclusion to the leaderset they are faulty again.
-leaderPolicyWithFaults="SimulatedRandomFailures"
-crashTimings="Straggler" # Possible values:
+leaderPolicyWithFaults="Simple"
+crashTimings="EpochStart" # Possible values:
                           #     "EpochStart": The faulty nodes stop participating at the protocol at the beginning of the first epoch
                           #     "EpochEnd": The faulty nodes stop participating at the protocol before proposing their last batch
                           #     "Straggler": The faulty nodes, if in the leaderset, delay proposing their batches for 0.5*viewChangeTimeouts. Works only with Pbft orderer.
+                          #     "SilentStraggler": Just handle, not sending any msg.
+                          #     "Equivocation": leader Equivocation 
 # For the single-leader policy, override the segment/epoch length
 singleLeaderEpoch=$minEpochLength
 
@@ -110,8 +112,8 @@ minBatchTimeout=$(($systemSizes * 1000 / $batchrates))  # [ms]
 # minBatchTimeout="200"      # [ms]
 maxBatchTimeout=$(($systemSizes * 1000 / $batchrates))  # [ms]
 # maxBatchTimeout="10000"      # [ms]
-segmentLengths="16"         # [entries]
-viewChangeTimeouts="60000"  # [ms]
+segmentLengths="32"         # [entries]
+viewChangeTimeouts="20000"  # [ms]
 nodeToLeaderRatios="1"      # How many nodes are initally leaders, set to 1 to have initially all nodes in the leaderset
 
 # batctimeout = minBatchTimeout, if maxLeaders/batchrate < minBatchTimeout
@@ -129,7 +131,7 @@ throughputsAuthPbft=$()
 # throughputsAuthPbft[4]="128 256 512 1024 2048 4096 8192 12288"
 throughputsAuthPbft[4]="4000"
 throughputsAuthPbft[8]="60000 65000"
-throughputsAuthPbft[16]="50000 55000 60000 65000"
+throughputsAuthPbft[16]="60000"
 throughputsAuthPbft[32]="30000 35000 40000 45000"
 throughputsAuthPbft[64]="30000 35000 40000 45000"
 throughputsAuthPbft[128]=""

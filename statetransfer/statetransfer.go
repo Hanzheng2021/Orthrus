@@ -19,10 +19,10 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/anonymous/orthrus/log"
-	"github.com/anonymous/orthrus/membership"
-	"github.com/anonymous/orthrus/messenger"
-	pb "github.com/anonymous/orthrus/protobufs"
+	"github.com/Hanzheng2021/Orthrus/log"
+	"github.com/Hanzheng2021/Orthrus/membership"
+	"github.com/Hanzheng2021/Orthrus/messenger"
+	pb "github.com/Hanzheng2021/Orthrus/protobufs"
 	logger "github.com/rs/zerolog/log"
 )
 
@@ -182,6 +182,8 @@ func processResponse(resp *pb.MissingEntry) error {
 
 	// Process the new entry through the orderer instead of directly inserting it in the log.
 	// This gives protocol executed by the orderer a chance to react to this event.
+	log.CommitEntry(entry) //orthrus
+	logger.Info().Int32("sn", entry.Sn).Msg("Commit missing entry.")
 	OrdererEntryHandler(entry)
 	return nil
 }
@@ -211,6 +213,7 @@ func handleRequest(req *pb.MissingEntryRequest, senderID int32) {
 		// Only append batch data if payload is requested
 		if req.PayloadRequest {
 			msg.Msg.(*pb.ProtocolMessage_MissingEntry).MissingEntry.Batch = entry.Batch
+			logger.Info().Int32("sn", req.Sn).Int32("peerID", senderID).Msg("payload is requested.")
 		}
 
 		logger.Info().Int32("sn", req.Sn).Int32("peerID", senderID).Msg("Sending missing entry.")

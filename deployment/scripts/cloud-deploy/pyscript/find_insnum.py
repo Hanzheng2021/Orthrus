@@ -27,6 +27,19 @@ if __name__=='__main__':
                     tmp_str=line[idx]
                 peer_num=int(peer_num_str)
                 num+=peer_num
+
+            find_failure=re.search(r'failureCounts=\(',line)
+            if find_failure is not None:
+                peer_num_str=""
+                idx=find_failure.span()[1]
+                tmp_str=line[idx]
+                while tmp_str != ")":
+                    peer_num_str+=tmp_str
+                    idx+=1
+                    tmp_str=line[idx]
+                failure_num=int(peer_num_str)
+                peer_num+=failure_num
+                num+=failure_num
                 break
         print(client_num,end=',')
         print(peer_num,end=',')

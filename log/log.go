@@ -17,8 +17,8 @@ package log
 import (
 	"sync"
 
-	pb "github.com/anonymous/orthrus/protobufs"
-	"github.com/anonymous/orthrus/tracing"
+	pb "github.com/Hanzheng2021/Orthrus/protobufs"
+	"github.com/Hanzheng2021/Orthrus/tracing"
 	logger "github.com/rs/zerolog/log"
 )
 
@@ -94,13 +94,13 @@ func CommitEntry(entry *Entry) {
 			//Time("committed", time.Unix(0, entry.CommitTs)).
 			Int64("latency", (entry.CommitTs-entry.CommitTs)/1000000).
 			Msg("Committed entry.")
-		if len(entry.Batch.Requests) > 0 {
-			go func() {
-				for i := 0; i < len(entry.Batch.Requests); i++ {
+		go func() {
+			for i := 0; i < len(entry.Batch.Requests); i++ {
+				if entry.Batch.Requests[i].IsContract == 0 {
 					tracing.Trace2.EventForClientInPeer(tracing.REQ_COMMIT, int64(entry.Batch.Requests[i].RequestId.ClientSn), entry.Batch.Requests[i].RequestId.ClientId)
 				}
-			}()
-		}
+			}
+		}()
 	}
 	entryPublishLock.Lock()
 	publishEntry(entry, logSubscribersOutOfOrder)
@@ -172,7 +172,7 @@ func EntriesOutOfOrder() chan *Entry {
 // TODO: Do we really want to wait until all previous entries are committed too?
 //
 //	This can unnecessarily delay a segment just because there is a hole somewhere in the past.
-//	(Move the notification to CommitEntry instead of PublishEntries?, If yes, watch out for the lock!)
+//	(Move the notification to CommitEntry instead of publishEntries?, If yes, watch out for the lock!)
 //	Added after changes to the SimpleCheckpointer:
 //	  SimpleCheckpointer relies on the absence of holes guaranteed by WaitForEntry.
 //	  The Manager relies on the absence of holes for consistent watermark advancement.
@@ -277,12 +277,18 @@ func publishEntries() {
 			if len(entry.(*Entry).Batch.Requests) > 0 {
 				go func(entry *Entry) {
 					for i := 0; i < len(entry.Batch.Requests); i++ {
-						tracing.Trace2.EventForClientInPeer(tracing.REQ_DELIVERED, int64(entry.Batch.Requests[i].RequestId.ClientSn), entry.Batch.Requests[i].RequestId.ClientId)
+						if entry.Batch.Requests[i].IsContract == 1 {
+							tracing.Trace2.EventForClientInPeer(tracing.REQ_COMMIT, int64(entry.Batch.Requests[i].RequestId.ClientSn), entry.Batch.Requests[i].RequestId.ClientId)
+						}
 					}
 				}(entry.(*Entry))
 			}
 			// On each iteration, push new log Entry to all in-order subscriber channels.
 			publishEntry(entry.(*Entry), logSubscribers)
+		} else {
+			logger.Info().
+				Int32("sn", firstEmptySN).
+				Msg("entry.(*Entry).Batch == nil.")
 		}
 		// Notify entry subscribers
 		// The Manager relies on an entry to be published (pushed to all log subscribers)

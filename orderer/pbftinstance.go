@@ -21,18 +21,18 @@ import (
 	"sync"
 	"time"
 
+	"github.com/Hanzheng2021/Orthrus/announcer"
+	"github.com/Hanzheng2021/Orthrus/config"
+	"github.com/Hanzheng2021/Orthrus/crypto"
+	"github.com/Hanzheng2021/Orthrus/log"
+	"github.com/Hanzheng2021/Orthrus/manager"
+	"github.com/Hanzheng2021/Orthrus/membership"
+	"github.com/Hanzheng2021/Orthrus/messenger"
+	pb "github.com/Hanzheng2021/Orthrus/protobufs"
+	"github.com/Hanzheng2021/Orthrus/request"
+	"github.com/Hanzheng2021/Orthrus/statetransfer"
+	"github.com/Hanzheng2021/Orthrus/tracing"
 	"github.com/golang/protobuf/proto"
-	"github.com/anonymous/orthrus/announcer"
-	"github.com/anonymous/orthrus/config"
-	"github.com/anonymous/orthrus/crypto"
-	"github.com/anonymous/orthrus/log"
-	"github.com/anonymous/orthrus/manager"
-	"github.com/anonymous/orthrus/membership"
-	"github.com/anonymous/orthrus/messenger"
-	pb "github.com/anonymous/orthrus/protobufs"
-	"github.com/anonymous/orthrus/request"
-	"github.com/anonymous/orthrus/statetransfer"
-	"github.com/anonymous/orthrus/tracing"
 	logger "github.com/rs/zerolog/log"
 	// cmap "github.com/orcaman/concurrent-map"
 )
@@ -81,6 +81,7 @@ type pbftInstance struct {
 	firstUncommitSn      map[int32]int32
 	inLadonViewChange    bool // True in view change mode, accepting only piority messages
 	// Ladon
+	height int32
 }
 
 type pbftBatch struct {
@@ -219,11 +220,12 @@ func (pi *pbftInstance) init(seg manager.Segment, orderer *PbftOrderer) {
 	}
 	pi.inLadonViewChange = false
 	// Ladon
+	pi.height = 0
 }
 
 func (pi *pbftInstance) lead() {
 
-	logger.Debug().
+	logger.Info().
 		Int32("OwnID", membership.OwnID).
 		Int("segID", pi.segment.SegID()).
 		Int("NumNodes", membership.NumNodes()).
@@ -249,6 +251,7 @@ func (pi *pbftInstance) lead() {
 		// Ladon
 		// If sn < last proposed sn, skip
 		if sn <= pi.lastProposeSn {
+			// logger.Info().Msg("Skip pi.lastProposeSn")
 			continue
 		}
 		// Ladon
@@ -412,20 +415,46 @@ func (pi *pbftInstance) proposeSN(preprepare *pb.PbftPreprepare, sn int32) {
 
 	// Simulate a crash if configured so.
 	if membership.SimulatedCrashes[membership.OwnID] != nil {
+		logger.Info().
+			Int32("pi.segment.FirstSN()", pi.segment.FirstSN()).
+			Int32("pi.segment.LastSN()", pi.segment.LastSN()).
+			Int("EpochLength", config.Config.EpochLength).
+			Int32("membership.OwnID", membership.OwnID).
+			Int32("sn", sn).
+			Msg("Info display.")
+		if pi.segment.FirstSN() >= int32(config.Config.EpochLength) && pi.segment.LastSN() < int32(config.Config.EpochLength)*2 {
+			// if pi.segment.FirstSN() < int32(membership.NumNodes()) {
 
-		if ((config.Config.CrashTiming == "EpochStart" && sn == pi.segment.FirstSN()) ||
-			(config.Config.CrashTiming == "EpochEnd" && sn == pi.segment.LastSN())) &&
-			sn < int32(config.Config.EpochLength) {
+			if (config.Config.CrashTiming == "EpochStart" && sn%int32(membership.NumNodes()) == int32(pi.segment.SegID()%membership.NumNodes()) && !messenger.Crashed) ||
+				(config.Config.CrashTiming == "EpochEnd" && sn == pi.segment.LastSN()) {
 
-			logger.Info().Str("crashTiming", config.Config.CrashTiming).Msg("Simulating node crash.")
-			messenger.Crashed = true
-			go func() {
-				time.Sleep(time.Duration(0.9*float64(config.Config.ViewChangeTimeoutMs)) * time.Millisecond)
-				messenger.Crashed = false
-			}()
+				logger.Info().Str("crashTiming", config.Config.CrashTiming).Msg("Simulating node crash.")
+				messenger.Crashed = true
+				go func() {
+					time.Sleep(time.Duration(0.9*float64(config.Config.ViewChangeTimeoutMs)) * time.Millisecond)
+					messenger.Crashed = false
+				}()
+			}
 		}
 	}
 
+	preprepare.EquFlag = false //orthrus
+
+	// Simulate Equivocation
+	if membership.SimulatedEquivocation[membership.OwnID] == 1 &&
+		config.Config.CrashTiming == "Equivocation" &&
+		//pi.lastProposeSn > pi.segment.FirstSN() &&
+		pi.height == 1 &&
+		pi.segment.FirstSN() >= int32(config.Config.EpochLength) &&
+		pi.segment.LastSN() < int32(config.Config.EpochLength)*2 {
+		logger.Info().
+			Int32("membership.OwnID", membership.OwnID).
+			Int32("lastProposeSn", pi.lastProposeSn).
+			Msg("Simulating Equivocation.")
+		//pi.sendViewChange()
+		//break
+		preprepare.EquFlag = true //orthrus
+	}
 	// New batches are proposed only in view 0
 	if pi.view > 0 {
 		return
@@ -455,7 +484,6 @@ func (pi *pbftInstance) proposeSN(preprepare *pb.PbftPreprepare, sn int32) {
 
 	// This is technically not necessary, as new batches are only proposed in view 0
 	preprepare.View = pi.view
-
 	logger.Info().Int32("sn", sn).
 		Int32("view", pi.view).
 		Int32("senderID", membership.OwnID).
@@ -467,6 +495,7 @@ func (pi *pbftInstance) proposeSN(preprepare *pb.PbftPreprepare, sn int32) {
 	//}
 	//Ladon
 	// Add message to own log
+	pi.height++
 	digest := pbftDigest(preprepare)
 	pi.batches[pi.view][sn].digest = digest
 	pi.batches[pi.view][sn].preprepareMsg = preprepare
@@ -485,7 +514,9 @@ func (pi *pbftInstance) proposeSN(preprepare *pb.PbftPreprepare, sn int32) {
 			Preprepare: preprepare,
 		},
 	}
-
+	for _, req := range batch.Requests {
+		logger.Debug().Int32("clientId", req.Msg.RequestId.ClientId).Int32("clientSn", req.Msg.RequestId.ClientSn).Int32("sn", sn).Msg("propose a transaction.")
+	}
 	tracing.MainTrace.Event(tracing.PROPOSE, int64(sn), int64(len(batch.Requests)))
 	// trace request id.
 	if len(batch.Requests) > 0 {
@@ -576,6 +607,12 @@ func (pi *pbftInstance) handlePreprepare(preprepare *pb.PbftPreprepare, msg *pb.
 	// 	Int64("costTime", time.Since(start).Milliseconds()).
 	// 	Msg("handlepreprepare 2")
 	// start = time.Now()
+
+	if config.Config.CrashTiming == "Equivocation" && membership.SimulatedEquivocation[senderID] == 1 && preprepare.EquFlag && sn >= int32(config.Config.EpochLength) && sn < int32(config.Config.EpochLength)*2 { //Equivocation
+		pi.sendViewChange()
+		logger.Info().Msg("Detect Equivocation...")
+		return fmt.Errorf("malformed message: leader %d Equivocation", senderID)
+	}
 
 	if batch.batch == nil {
 		logger.Error().Int32("peerId", senderID).Int32("sn", sn).Msg("Invalid requests in proposal.")
@@ -687,6 +724,14 @@ func (pi *pbftInstance) sendPrepare(batch *pbftBatch) {
 	// Add message to own log
 	batch.prepareMsgs[membership.OwnID] = prepare
 
+	// Simulate a straggler.
+	// if membership.SimulatedStraggler[membership.OwnID] == 1 {
+	if membership.SimulatedStraggler[membership.OwnID] == 1 &&
+		config.Config.CrashTiming == "SilentStraggler" {
+		logger.Debug().Msg("Skipping sendPrepare...")
+		return
+	}
+
 	// Enqueue the message for all other nodes
 	for _, nodeID := range pi.segment.Followers() {
 		if nodeID == membership.OwnID {
@@ -723,6 +768,24 @@ func (pi *pbftInstance) handlePrepare(prepare *pb.PbftPrepare, msg *pb.ProtocolM
 	}
 
 	batch := pi.batches[pi.view][sn]
+
+	// if config.Config.CrashTiming == "Equivocation" && senderID == 1 && len(batch.prepareMsgs) > membership.Faults() { //Equivocation
+	// 	pi.sendViewChange()
+	// 	logger.Info().Msg("Detect Equivocation...")
+	// 	return fmt.Errorf("malformed message: leader %d Equivocation", senderID)
+	// }
+
+	// if config.Config.CrashTiming == "Equivocation" && membership.SimulatedEquivocation[batch.preprepareMsg.Leader] == 1 && sn >= int32(config.Config.EpochLength) && sn < int32(config.Config.EpochLength)*2 { //Equivocation
+	// 	if len(batch.prepareMsgs) == membership.Faults() + 1 {
+	// 		pi.sendViewChange()
+	// 		logger.Info().Msg("Detect Equivocation...")
+	// 		return fmt.Errorf("malformed message: leader %d Equivocation", senderID)
+	// 	}
+	// 	if len(batch.prepareMsgs) > membership.Faults() + 1 {
+	// 		return nil
+	// 	}
+	// }
+
 	if _, ok := batch.prepareMsgs[senderID]; ok {
 		return fmt.Errorf("duplicate prepare message from %d", senderID)
 	}
@@ -796,6 +859,14 @@ func (pi *pbftInstance) sendCommit(batch *pbftBatch) {
 
 	// Add message to own log
 	batch.commitMsgs[membership.OwnID] = commit
+
+	// Simulate a straggler.
+	// if membership.SimulatedStraggler[membership.OwnID] == 1 {
+	if membership.SimulatedStraggler[membership.OwnID] == 1 &&
+		config.Config.CrashTiming == "SilentStraggler" {
+		logger.Debug().Msg("Skipping sendCommit...")
+		return
+	}
 
 	// Enqueue the message for all other nodes
 	for _, nodeID := range pi.segment.Followers() {

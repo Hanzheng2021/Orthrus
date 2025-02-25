@@ -19,9 +19,9 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/anonymous/orthrus/config"
-	"github.com/anonymous/orthrus/crypto"
-	pb "github.com/anonymous/orthrus/protobufs"
+	"github.com/Hanzheng2021/Orthrus/config"
+	"github.com/Hanzheng2021/Orthrus/crypto"
+	pb "github.com/Hanzheng2021/Orthrus/protobufs"
 	logger "github.com/rs/zerolog/log"
 )
 
@@ -55,7 +55,8 @@ var (
 
 	// Ladon: Simulate Straggler setting
 	SimulatedStraggler map[int32]int32
-
+	//orthrus
+	SimulatedEquivocation map[int32]int32
 	// Ladon: highest rank
 	htn  int32
 	lock sync.Mutex
@@ -80,6 +81,7 @@ func Init() {
 
 	SimulatedCrashes = make(map[int32]*pb.NodeIdentity)
 	SimulatedStraggler = make(map[int32]int32)
+	SimulatedEquivocation = make(map[int32]int32)
 	htn = -1
 }
 
@@ -127,7 +129,9 @@ func InitNodeIdentities(identities []*pb.NodeIdentity) {
 	for _, p := range allNodeIDs[:config.Config.Failures] {
 		SimulatedCrashes[p] = nodeIdentities[p]
 	}
-
+	for _, p := range allNodeIDs[:config.Config.Failures] {
+		SimulatedEquivocation[p] = 1
+	}
 	// rand.Seed(config.Config.RandomSeed)
 	// for i := 0; i < config.Config.StragglerCnt; i++ {
 	// 	randi := int32(rand.Intn(len(allNodeIDs)))

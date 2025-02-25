@@ -17,9 +17,9 @@ package orderer
 import (
 	"sync"
 
-	"github.com/anonymous/orthrus/log"
-	"github.com/anonymous/orthrus/manager"
-	pb "github.com/anonymous/orthrus/protobufs"
+	"github.com/Hanzheng2021/Orthrus/log"
+	"github.com/Hanzheng2021/Orthrus/manager"
+	pb "github.com/Hanzheng2021/Orthrus/protobufs"
 )
 
 // The Orderer is responsible for ordering log Entries, i.e., creating the mapping between Entries and sequence numbers.

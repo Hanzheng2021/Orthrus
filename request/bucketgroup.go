@@ -19,8 +19,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/anonymous/orthrus/config"
-	"github.com/anonymous/orthrus/membership"
+	"github.com/Hanzheng2021/Orthrus/config"
+	"github.com/Hanzheng2021/Orthrus/membership"
 	logger "github.com/rs/zerolog/log"
 )
 

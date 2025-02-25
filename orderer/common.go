@@ -18,8 +18,8 @@ import (
 	"sync/atomic"
 
 	logger "github.com/rs/zerolog/log"
-	"github.com/anonymous/orthrus/manager"
-	pb "github.com/anonymous/orthrus/protobufs"
+	"github.com/Hanzheng2021/Orthrus/manager"
+	pb "github.com/Hanzheng2021/Orthrus/protobufs"
 )
 
 const backlogSize = 10000

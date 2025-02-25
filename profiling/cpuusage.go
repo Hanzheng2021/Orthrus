@@ -20,7 +20,7 @@ import (
 
 	linuxproc "github.com/c9s/goprocinfo/linux"
 	logger "github.com/rs/zerolog/log"
-	"github.com/anonymous/orthrus/tracing"
+	"github.com/Hanzheng2021/Orthrus/tracing"
 )
 
 func StartCPUTracing(trace tracing.Trace, interval time.Duration) {

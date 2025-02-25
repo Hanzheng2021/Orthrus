@@ -20,7 +20,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/anonymous/orthrus/config"
+	"github.com/Hanzheng2021/Orthrus/config"
 	"github.com/rs/zerolog"
 	logger "github.com/rs/zerolog/log"
 )

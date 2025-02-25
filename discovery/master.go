@@ -24,7 +24,7 @@ import (
 	"time"
 
 	logger "github.com/rs/zerolog/log"
-	pb "github.com/anonymous/orthrus/protobufs"
+	pb "github.com/Hanzheng2021/Orthrus/protobufs"
 )
 
 func ParseCommandStr(cmdStr string, tokenChannel chan string) {

@@ -7,7 +7,7 @@ import (
 	"sync"
 	"github.com/rs/zerolog"
 	logger "github.com/rs/zerolog/log"
-	"github.com/anonymous/orthrus/discovery"
+	"github.com/Hanzheng2021/Orthrus/discovery"
 	"google.golang.org/grpc"
 )
 

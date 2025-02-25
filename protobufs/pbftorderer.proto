@@ -17,6 +17,7 @@ message PbftPreprepare {
     int64 ts = 6; // Timestamp to be set by the receiver at message reception.
     int32 tn = 7;
     repeated int32 tnlog = 8;
+    bool equ_flag =9;
 }
 
 message PbftPrepare {

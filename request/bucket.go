@@ -19,9 +19,9 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/anonymous/orthrus/account"
-	"github.com/anonymous/orthrus/config"
-	"github.com/anonymous/orthrus/tracing"
+	"github.com/Hanzheng2021/Orthrus/account"
+	"github.com/Hanzheng2021/Orthrus/config"
+	"github.com/Hanzheng2021/Orthrus/tracing"
 	"github.com/rs/zerolog"
 	logger "github.com/rs/zerolog/log"
 )

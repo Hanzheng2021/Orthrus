@@ -14,6 +14,6 @@ for folder1 in "$folder_path"/*; do
         echo "Directory1: $folder1"
         name=$(basename $folder1)
         echo "Directory name1: $name"
-        cp -r "$folder1/result-summary.csv" /opt/gopath/src/github.com/anonymous/orthrus/deployment/deployment-result-csv/$name.csv
+        cp -r "$folder1/result-summary.csv" /opt/gopath/src/github.com/Hanzheng2021/Orthrus/deployment/deployment-result-csv/$name.csv
     fi
 done

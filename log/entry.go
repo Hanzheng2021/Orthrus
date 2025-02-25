@@ -14,7 +14,7 @@
 
 package log
 
-import pb "github.com/anonymous/orthrus/protobufs"
+import pb "github.com/Hanzheng2021/Orthrus/protobufs"
 
 // TODO: Consider making this a protobuf message, as it may need to be contained in the missing entry response.
 type Entry struct {

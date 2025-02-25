@@ -19,7 +19,7 @@ instance_tag_file=$work_dir/instance-tag
 detail_file=$work_dir/instance-detail.json
 ssh_key_file=$work_dir/ibmcloud-ssh-key
 
-git_repository=git@github.com:anonymous/orthrus.git
+git_repository=git@github.com:Hanzheng2021/Orthrus.git
 main=iss
 git_directory=orthrus # Relative path from the Go source IBM repository dir ($GOPATH/src/github.com/anonymous)
 
@@ -28,8 +28,8 @@ oldmir_git_repository=git@github.ibm.com:fabric-security-research/sbft.git
 oldmir_git_branch=mir
 oldmir_git_directory=sbft # Relative path from the Go source IBM repository dir ($GOPATH/src/github.ibm.com)
 
-tls_directory="$work_dir/go/src/github.com/anonymous/$git_directory/deployment/tls-data"
-config_file="$work_dir/go/src/github.com/anonymous/$git_directory/config/config.yml"
+tls_directory="$work_dir/go/src/github.com/Hanzheng2021/$git_directory/deployment/tls-data"
+config_file="$work_dir/go/src/github.com/Hanzheng2021/$git_directory/config/config.yml"
 master_command_template_file=$work_dir/master-commands-template.cmd
 master_command_template_file_uploaded=$work_dir/master-commands-template-uploaded # analogous to $detail_file_uploaded
 master_command_file=$work_dir/master-commands.cmd

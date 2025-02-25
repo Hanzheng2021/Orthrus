@@ -5,19 +5,19 @@ import (
 	"sync"
 	"time"
 
-	"github.com/anonymous/orthrus/account"
-	"github.com/anonymous/orthrus/checkpoint"
-	"github.com/anonymous/orthrus/config"
-	"github.com/anonymous/orthrus/crypto"
-	"github.com/anonymous/orthrus/discovery"
-	"github.com/anonymous/orthrus/manager"
-	"github.com/anonymous/orthrus/membership"
-	"github.com/anonymous/orthrus/messenger"
-	"github.com/anonymous/orthrus/orderer"
-	"github.com/anonymous/orthrus/profiling"
-	"github.com/anonymous/orthrus/request"
-	"github.com/anonymous/orthrus/statetransfer"
-	"github.com/anonymous/orthrus/tracing"
+	"github.com/Hanzheng2021/Orthrus/account"
+	"github.com/Hanzheng2021/Orthrus/checkpoint"
+	"github.com/Hanzheng2021/Orthrus/config"
+	"github.com/Hanzheng2021/Orthrus/crypto"
+	"github.com/Hanzheng2021/Orthrus/discovery"
+	"github.com/Hanzheng2021/Orthrus/manager"
+	"github.com/Hanzheng2021/Orthrus/membership"
+	"github.com/Hanzheng2021/Orthrus/messenger"
+	"github.com/Hanzheng2021/Orthrus/orderer"
+	"github.com/Hanzheng2021/Orthrus/profiling"
+	"github.com/Hanzheng2021/Orthrus/request"
+	"github.com/Hanzheng2021/Orthrus/statetransfer"
+	"github.com/Hanzheng2021/Orthrus/tracing"
 	"github.com/rs/zerolog"
 	logger "github.com/rs/zerolog/log"
 )
@@ -147,19 +147,19 @@ func main() {
 	discovery.SyncPeer(discoveryServAddr, ownID)
 	logger.Info().Msg("All peers finished connecting. Starting ISS.")
 
-	// If we are simulating a crashed node, exit immediately.
-	if config.Config.LeaderPolicy == "SimulatedRandomFailures" {
-		crash := true
-		for _, l := range manager.NewLeaderPolicy(config.Config.LeaderPolicy).GetLeaders(0) {
-			if l == membership.OwnID {
-				crash = false
-			}
-		}
-		if crash {
-			logger.Info().Msg("Simulating crashed peer. Exiting.")
-			return
-		}
-	}
+	// // If we are simulating a crashed node, exit immediately.
+	// if config.Config.LeaderPolicy == "SimulatedRandomFailures" {
+	// 	crash := true
+	// 	for _, l := range manager.NewLeaderPolicy(config.Config.LeaderPolicy).GetLeaders(0) {
+	// 		if l == membership.OwnID {
+	// 			crash = false
+	// 		}
+	// 	}
+	// 	if crash {
+	// 		logger.Info().Msg("Simulating crashed peer. Exiting.")
+	// 		return
+	// 	}
+	// }
 
 	// Start all modules.
 	// The order of the calls must not matter, as they are all concurrent. If it does, it's a bug.

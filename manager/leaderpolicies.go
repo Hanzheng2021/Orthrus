@@ -16,8 +16,8 @@ package manager
 
 import (
 	logger "github.com/rs/zerolog/log"
-	"github.com/anonymous/orthrus/config"
-	"github.com/anonymous/orthrus/membership"
+	"github.com/Hanzheng2021/Orthrus/config"
+	"github.com/Hanzheng2021/Orthrus/membership"
 )
 
 type leaderPolicy interface {

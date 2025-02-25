@@ -14,7 +14,7 @@
 
 package orderer
 
-import "github.com/anonymous/orthrus/manager"
+import "github.com/Hanzheng2021/Orthrus/manager"
 
 type Instance interface {
 	init(seg manager.Segment, orderer *Orderer)

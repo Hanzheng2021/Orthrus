@@ -14,15 +14,15 @@ import (
 
 	"math/rand"
 
-	"github.com/anonymous/orthrus/config"
-	"github.com/anonymous/orthrus/crypto"
-	"github.com/anonymous/orthrus/discovery"
-	"github.com/anonymous/orthrus/manager"
-	"github.com/anonymous/orthrus/membership"
-	"github.com/anonymous/orthrus/messenger"
-	pb "github.com/anonymous/orthrus/protobufs"
-	"github.com/anonymous/orthrus/request"
-	"github.com/anonymous/orthrus/tracing"
+	"github.com/Hanzheng2021/Orthrus/config"
+	"github.com/Hanzheng2021/Orthrus/crypto"
+	"github.com/Hanzheng2021/Orthrus/discovery"
+	"github.com/Hanzheng2021/Orthrus/manager"
+	"github.com/Hanzheng2021/Orthrus/membership"
+	"github.com/Hanzheng2021/Orthrus/messenger"
+	pb "github.com/Hanzheng2021/Orthrus/protobufs"
+	"github.com/Hanzheng2021/Orthrus/request"
+	"github.com/Hanzheng2021/Orthrus/tracing"
 	"github.com/golang/protobuf/proto"
 	"github.com/rs/zerolog"
 	logger "github.com/rs/zerolog/log"
@@ -271,6 +271,9 @@ func (c *client) fetchFromFile(numRequests int) {
 		isContract := int32(0)
 		if rand.Intn(100) < config.Config.ContractProportion {
 			isContract = 1
+			logger.Debug().Msg("create a contract transaction.")
+		} else {
+			logger.Debug().Msg("create a payment transaction.")
 		}
 		newRequest := &pb.ClientRequest{
 			RequestId: &pb.RequestID{

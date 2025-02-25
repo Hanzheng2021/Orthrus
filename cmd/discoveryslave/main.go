@@ -12,8 +12,8 @@ import (
 
 	"github.com/rs/zerolog"
 	logger "github.com/rs/zerolog/log"
-	"github.com/anonymous/orthrus/discovery"
-	pb "github.com/anonymous/orthrus/protobufs"
+	"github.com/Hanzheng2021/Orthrus/discovery"
+	pb "github.com/Hanzheng2021/Orthrus/protobufs"
 	"google.golang.org/grpc"
 )
 

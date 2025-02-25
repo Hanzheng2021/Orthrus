@@ -16,12 +16,12 @@ import (
 
 	"github.com/rs/zerolog"
 	logger "github.com/rs/zerolog/log"
-	"github.com/anonymous/orthrus/config"
-	"github.com/anonymous/orthrus/crypto"
-	"github.com/anonymous/orthrus/profiling"
-	pb "github.com/anonymous/orthrus/protobufs"
-	"github.com/anonymous/orthrus/request"
-	"github.com/anonymous/orthrus/tracing"
+	"github.com/Hanzheng2021/Orthrus/config"
+	"github.com/Hanzheng2021/Orthrus/crypto"
+	"github.com/Hanzheng2021/Orthrus/profiling"
+	pb "github.com/Hanzheng2021/Orthrus/protobufs"
+	"github.com/Hanzheng2021/Orthrus/request"
+	"github.com/Hanzheng2021/Orthrus/tracing"
 )
 
 func main() {

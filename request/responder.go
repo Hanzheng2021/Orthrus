@@ -17,10 +17,10 @@ package request
 import (
 	"sync"
 
-	"github.com/anonymous/orthrus/log"
-	"github.com/anonymous/orthrus/messenger"
-	pb "github.com/anonymous/orthrus/protobufs"
-	"github.com/anonymous/orthrus/tracing"
+	"github.com/Hanzheng2021/Orthrus/log"
+	"github.com/Hanzheng2021/Orthrus/messenger"
+	pb "github.com/Hanzheng2021/Orthrus/protobufs"
+	"github.com/Hanzheng2021/Orthrus/tracing"
 	logger "github.com/rs/zerolog/log"
 )
 
@@ -63,7 +63,7 @@ func (r *Responder) Start(wg *sync.WaitGroup) {
 					Int32("clientSn", req.RequestId.ClientSn).
 					Int32("sn", e.Sn).
 					Msg("Sending response to client.")
-
+				logger.Debug().Msg("commit a contract transaction.")
 				// Respond to the corresponding client.
 				tracing.Trace2.EventForClientInPeer(tracing.RESP_SEND, int64(req.RequestId.ClientSn), req.RequestId.ClientId)
 
@@ -91,7 +91,7 @@ func (r *Responder) StartOutOfOrder(wg *sync.WaitGroup) {
 					Int32("clientSn", req.RequestId.ClientSn).
 					Int32("sn", e.Sn).
 					Msg("Sending response to client.(Out Of Order)")
-
+				logger.Debug().Msg("commit a payment transaction.")
 				// Respond to the corresponding client.
 				tracing.Trace2.EventForClientInPeer(tracing.RESP_SEND, int64(req.RequestId.ClientSn), req.RequestId.ClientId)
 

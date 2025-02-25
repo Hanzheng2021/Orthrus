@@ -18,12 +18,12 @@ import (
 	"sync"
 
 	logger "github.com/rs/zerolog/log"
-	"github.com/anonymous/orthrus/log"
-	"github.com/anonymous/orthrus/manager"
-	"github.com/anonymous/orthrus/membership"
-	"github.com/anonymous/orthrus/messenger"
+	"github.com/Hanzheng2021/Orthrus/log"
+	"github.com/Hanzheng2021/Orthrus/manager"
+	"github.com/Hanzheng2021/Orthrus/membership"
+	"github.com/Hanzheng2021/Orthrus/messenger"
 
-	pb "github.com/anonymous/orthrus/protobufs"
+	pb "github.com/Hanzheng2021/Orthrus/protobufs"
 )
 
 // Represents a simple implementation of a Checkpointer.

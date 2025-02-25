@@ -20,10 +20,10 @@ import (
 	"sync/atomic"
 
 	logger "github.com/rs/zerolog/log"
-	"github.com/anonymous/orthrus/config"
-	"github.com/anonymous/orthrus/crypto"
-	"github.com/anonymous/orthrus/membership"
-	pb "github.com/anonymous/orthrus/protobufs"
+	"github.com/Hanzheng2021/Orthrus/config"
+	"github.com/Hanzheng2021/Orthrus/crypto"
+	"github.com/Hanzheng2021/Orthrus/membership"
+	pb "github.com/Hanzheng2021/Orthrus/protobufs"
 )
 
 // Represents a batch of requests.

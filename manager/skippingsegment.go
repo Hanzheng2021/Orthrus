@@ -14,7 +14,7 @@
 
 package manager
 
-import "github.com/anonymous/orthrus/request"
+import "github.com/Hanzheng2021/Orthrus/request"
 
 // Represents a segment with a non-contiguous ordered range of sequence numbers.
 // Each sequence number has a fixed distance form the previous sequence number.

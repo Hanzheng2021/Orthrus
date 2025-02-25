@@ -14,7 +14,7 @@
 
 package manager
 
-import "github.com/anonymous/orthrus/request"
+import "github.com/Hanzheng2021/Orthrus/request"
 
 // Represents a Segment of the log that is handled by one ordering instance, independently of and in parallel with
 // other Segments. Segments are created by the Manager and all nodes receive information about Segments they are

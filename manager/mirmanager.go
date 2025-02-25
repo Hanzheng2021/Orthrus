@@ -18,16 +18,16 @@ import (
 	"sort"
 	"sync"
 
+	"github.com/Hanzheng2021/Orthrus/config"
+	"github.com/Hanzheng2021/Orthrus/log"
+	"github.com/Hanzheng2021/Orthrus/membership"
+	"github.com/Hanzheng2021/Orthrus/messenger"
+	pb "github.com/Hanzheng2021/Orthrus/protobufs"
+	"github.com/Hanzheng2021/Orthrus/request"
+	"github.com/Hanzheng2021/Orthrus/statetransfer"
+	"github.com/Hanzheng2021/Orthrus/tracing"
+	"github.com/Hanzheng2021/Orthrus/util"
 	logger "github.com/rs/zerolog/log"
-	"github.com/anonymous/orthrus/config"
-	"github.com/anonymous/orthrus/log"
-	"github.com/anonymous/orthrus/membership"
-	"github.com/anonymous/orthrus/messenger"
-	pb "github.com/anonymous/orthrus/protobufs"
-	"github.com/anonymous/orthrus/request"
-	"github.com/anonymous/orthrus/statetransfer"
-	"github.com/anonymous/orthrus/tracing"
-	"github.com/anonymous/orthrus/util"
 )
 
 // Holds the state of the MirManager.
@@ -137,7 +137,6 @@ func (mm *MirManager) handleLogEntries(wg *sync.WaitGroup) {
 	initialLeaders := mm.leaderPolicy.GetLeaders(0)
 	mm.issueSegments([]interface{}{}, initialLeaders, 0)
 	tracing.MainTrace.Event(tracing.NEW_EPOCH, 0, int64(len(initialLeaders)))
-
 	// Channel should be closed on shutdown for this loop to exit.
 	for entry := <-mm.entriesChannel; entry != nil; entry = <-mm.entriesChannel {
 		if entry.Aborted {
