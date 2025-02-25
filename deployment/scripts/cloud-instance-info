@@ -1,0 +1,6 @@
+master 10.20.61.124 10.20.61.124 master us-west-2a
+client 10.20.31.146 10.20.31.146 1client us-west-2a
+p1 10.20.79.254 10.20.79.254 peers us-west-2a
+p2 10.20.8.8 10.20.8.8 peers us-west-2a
+p3 10.20.46.92 10.20.46.92 peers us-west-2a
+p4 10.20.7.139 10.20.7.139 peers us-west-2a
