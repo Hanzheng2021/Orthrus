@@ -69,7 +69,6 @@ To install Golang and requirements:
 The default path to the repository is set to: `/opt/gopath/src/github.com/Hanzheng2021/orthrus/`.
 
 
-### ISS Installation
 The `run-protoc.sh` script needs to be run from the project root directory (i.e. `orthrus`) before compiling the Go
 files. 
 
